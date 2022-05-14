@@ -6,24 +6,24 @@ USE company_db;
 
 CREATE TABLE departments (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    dept_name VARCHAR(30)
+    dept_name VARCHAR(64)
 );
 
 CREATE TABLE roles (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(30),
+    title VARCHAR(64),
     salary DECIMAL,
     dept_id INT,
     FOREIGN KEY(dept_id)
-    REFERENCES department(id)
-    ON DELETE SET 1
+    REFERENCES departments(id)
+    ON DELETE SET NULL
 );
 
 CREATE TABLE employees (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(30),
     last_name VARCHAR(30),
-    role_id DECIMAL,
+    role_id INT,
     manager_id INT,
     FOREIGN KEY(role_id)
     REFERENCES roles(id)

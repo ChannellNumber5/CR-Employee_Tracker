@@ -1,6 +1,7 @@
 
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
+const cTable = require('console.table')
 
 //copies, updates, and refactors code from my teamProfile Generator https://github.com/ChannellNumber5/CR-TeamProfileGenerator
 function init(){
@@ -61,15 +62,14 @@ function init(){
             } else if (data.toDoNext === "Update an Employee Role") {
                 updateEmployee();
             } else {
-                teamFinished();
-                console.log("Team has been created!")
+                console.log("Thank you for using the Employee Tracker Application!")
             }
         });
     
     }
 
     function viewAllDepartments(){
-        
+
     }
     
     function createIntern() {
@@ -182,10 +182,6 @@ function init(){
             }
         })
     }
-    
-    function teamFinished(){
-        fs.writeFile("./dist/index.html", HtmlGenerator(teamList), (err) => 
-        err ? console.error(err) : console.log("File Created Successfully"));
-    }
+
     
     init();
