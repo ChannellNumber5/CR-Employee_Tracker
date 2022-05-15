@@ -62,6 +62,23 @@ async function viewAllEmployees() {
     return tableData;
 }
 
+async function viewAllEmployeesAndRoles() {
+    const empData = await sequelize.query("SELECT employees.first_name, employees.last_name, roles.title FROM roles INNER JOIN employees ON roles.id=employees.role_id");
+    const tableData = cTable.getTable(empData[1]);
+    return tableData;
+}
+
+//Not sure what to do with these have this idea to keep any asynchronous fetches to their own function, so only have to deal with the promise once...
+// async function getcurrentDepartments () {
+//     const roles = await sequelize.query('SELECT title FROM roles')
+// }
+
+// async function getcurrentRoles () {
+//     const roles = await sequelize.query('SELECT title FROM roles')
+// }
+// async function getcurrentEmployees () {
+//     const roles = await sequelize.query('SELECT title FROM roles')
+// }
 
 function addDepartment() {
     inquirer
@@ -122,10 +139,6 @@ function addEmployee() {
             message: "Who is this employee's manager?",
             choices:[]
             },
-            {type:"input",
-            name: "school",
-            message: "Please Enter the Intern's Current School/University:"
-            },
         ])
         .then((data) => {
             const newDept = new Intern(data.internName, data.internId, data.internEmail, data.school)
@@ -134,9 +147,6 @@ function addEmployee() {
         })
 }
 
-async function currentRoles () {
-    const roles = await sequelize.query('SELECT title FROM roles')
-}
 
 function deleteEmployee() {
     inquirer
