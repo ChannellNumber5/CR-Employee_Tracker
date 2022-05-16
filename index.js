@@ -62,23 +62,45 @@ async function viewAllEmployees() {
     return tableData;
 }
 
-async function viewAllEmployeesAndRoles() {
-    const empData = await sequelize.query("SELECT employees.first_name, employees.last_name, roles.title FROM roles INNER JOIN employees ON roles.id=employees.role_id");
-    const tableData = cTable.getTable(empData[1]);
-    return tableData;
+async function viewAllData() {
+    console.log("Current Departments: ");
+    console.log(await getCurrentDepartments());
+    console.log("Current Roles: ");
+    console.log(await getCurrentRoles());
+    console.log("Current Employees: ");
+    console.log(await getCurrentEmployees());
+
 }
 
 //Not sure what to do with these have this idea to keep any asynchronous fetches to their own function, so only have to deal with the promise once...
-// async function getcurrentDepartments () {
-//     const roles = await sequelize.query('SELECT title FROM roles')
-// }
+async function getCurrentDepartments () {
+    const data = await sequelize.query('SELECT dept_name FROM departments ORDER BY dept_name');
+    const departments = data[1];
+    let deptTitles = [];
+    for (let i = 0; i < departments.length; i++) {
+        deptTitles.unshift(departments[i].dept_name);
+    }
+    return deptTitles;
+}
 
-// async function getcurrentRoles () {
-//     const roles = await sequelize.query('SELECT title FROM roles')
-// }
-// async function getcurrentEmployees () {
-//     const roles = await sequelize.query('SELECT title FROM roles')
-// }
+async function getCurrentRoles () {
+    const data = await sequelize.query('SELECT title FROM roles');
+    const roles = data[1];
+    let roleTitles = [];
+    for (let i = 0; i < roles.length; i++) {
+        roleTitles.unshift(roles[i].title);
+    }
+    return roleTitles;
+}
+async function getCurrentEmployees () {
+    const data = await sequelize.query('SELECT first_name, last_name FROM employees');
+    const employees = data[1];
+    let empTitles = [];
+    for (let i = 0; i < employees.length; i++) {
+        empTitles.unshift(employees[i].first_name + " " + employees[i].last_name);
+    }
+    return empTitles;
+}
 
 function addDepartment() {
     inquirer
@@ -140,7 +162,7 @@ function addRole() {
                     console.log(`New department ${snakeCaseData} added! \n`);
                 }
                 runMenu();
-                });
+        });
         
 }
 
@@ -231,4 +253,6 @@ function addRole() {
 //     })
 // }
 
-runMenu();
+// runMenu();
+
+viewAllData();
