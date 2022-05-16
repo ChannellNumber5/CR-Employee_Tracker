@@ -23,3 +23,5 @@ MIT
 - [Sequelize Queries](https://sequelize.org/docs/v6/core-concepts/raw-queries/)
 - [Table Aliases and Self Join](https://www.sqlservertutorial.net/sql-server-basics/sql-server-self-join/#:~:text=SQL%20Server%20self%20join%20syntax&text=It%20helps%20query%20hierarchical%20data,same%20table%20within%20the%20query.)
 - [Using SUM and CASE](https://stackoverflow.com/questions/13075505/mysql-is-it-possible-to-sum-if-or-to-count-if)
+- [TypeOf](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof)
+- [Update data in mySQL](https://www.w3schools.com/mysql/mysql_update.asp)

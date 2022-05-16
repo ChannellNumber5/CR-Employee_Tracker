@@ -27,16 +27,12 @@ function runMenu() {
             runMenu();
         } else if (data.toDoNext === "Add a Department") {
             addDepartment();
-            // runMenu();
         } else if (data.toDoNext === "Add a Role") {
             addRole();
-            // runMenu();
         } else if (data.toDoNext === "Add an Employee") {
             addEmployee();
-            // runMenu();
         } else if (data.toDoNext === "Update an Employee Role") {
-            updateEmployee();
-            // runMenu();
+            updateRole();
         } else {
             console.log("Thank you for using the Employee Tracker Application!")
         }
@@ -239,6 +235,62 @@ async function addEmployee() {
         })
 }
 
+async function updateRole() {
+    const roleInfo = parseSqlData(await getCurrentRoles());
+    const roleIds = roleInfo[0];
+    const roleNames = roleInfo[1];
+
+    const empInfo = parseSqlData(await getCurrentEmployees());
+    const empIds = empInfo[0];
+    const empNames = empInfo[1];
+    empIds.push("null");
+    empNames.push("No Manager");
+
+    inquirer
+        .prompt([
+            {type:"list",
+            name: "employee",
+            message: "Which employee would you like to update?",
+            choices: empNames
+            },
+            {type:"list",
+            name: "role",
+            message: "What is this employees new role?",
+            choices: roleNames
+            },
+            {type:"list",
+            name: "manager",
+            message: "Who is this employees new manager?",
+            choices: empNames
+            }
+        ])
+        .then((data) => {
+                const employee = data.employee;
+                const role = data.role;
+                const manager = data.manager;
+                let index1;
+                let index2;
+                let index3;
+                for (let i = 0; i < roleNames.length; i++){
+                    if (role === roleNames[i]) {
+                        index1 = i;
+                    }
+                }
+                for (let i = 0; i < empNames.length; i++){
+                    if (employee === empNames[i]) {
+                        index2 = i;
+                    }
+                }
+                for (let i = 0; i < empNames.length; i++){
+                    if (manager === empNames[i]) {
+                        index3 = i;
+                    }
+                }
+                sequelize.query(`UPDATE employees SET role_id = ${roleIds[index1]}, manager_id = ${empIds[index3]} WHERE id=${empIds[index2]}`);
+                console.log(`${empNames[index2]}'s role was updated! \n`);
+                runMenu();
+            });
+}
 
 
 runMenu();
