@@ -65,41 +65,54 @@ async function viewAllEmployees() {
 async function viewAllData() {
     console.log("Current Departments: ");
     console.log(await getCurrentDepartments());
+    console.log(parseSqlData(await getCurrentDepartments()));
     console.log("Current Roles: ");
     console.log(await getCurrentRoles());
+    console.log(parseSqlData(await getCurrentRoles()));
     console.log("Current Employees: ");
     console.log(await getCurrentEmployees());
+    console.log(parseSqlData(await getCurrentEmployees()));
 
 }
 
 //Not sure what to do with these have this idea to keep any asynchronous fetches to their own function, so only have to deal with the promise once...
 async function getCurrentDepartments () {
-    const data = await sequelize.query('SELECT dept_name FROM departments ORDER BY dept_name');
+    const data = await sequelize.query('SELECT id, dept_name FROM departments ORDER BY dept_name');
     const departments = data[1];
-    let deptTitles = [];
+    let deptInfo = [];
     for (let i = 0; i < departments.length; i++) {
-        deptTitles.unshift(departments[i].dept_name);
+        deptInfo.push([departments[i].id, departments[i].dept_name]);
     }
-    return deptTitles;
+    return deptInfo;
 }
 
 async function getCurrentRoles () {
-    const data = await sequelize.query('SELECT title FROM roles');
+    const data = await sequelize.query('SELECT id, title FROM roles');
     const roles = data[1];
-    let roleTitles = [];
+    let roleInfo = [];
     for (let i = 0; i < roles.length; i++) {
-        roleTitles.unshift(roles[i].title);
+        roleInfo.push([roles[i].id, roles[i].title]);
     }
-    return roleTitles;
+    return roleInfo;
 }
 async function getCurrentEmployees () {
-    const data = await sequelize.query('SELECT first_name, last_name FROM employees');
+    const data = await sequelize.query('SELECT id, first_name, last_name FROM employees');
     const employees = data[1];
-    let empTitles = [];
+    let empInfo = [];
     for (let i = 0; i < employees.length; i++) {
-        empTitles.unshift(employees[i].first_name + " " + employees[i].last_name);
+        empInfo.push([employees[i].id, employees[i].first_name + " " + employees[i].last_name]);
     }
-    return empTitles;
+    return empInfo;
+}
+
+function parseSqlData (data) {
+    let dataIds=[];
+    let dataTitles=[];
+    for(let i=0; i < data.length; i++){
+        dataIds.push(data[i][0]);
+        dataTitles.push(data[i][1]);
+    }
+    return [dataIds, dataTitles];
 }
 
 function addDepartment() {
@@ -125,7 +138,10 @@ function addDepartment() {
         
 }
 
-function addRole() {
+async function addRole() {
+    const deptInfo = parseSqlData(await getCurrentDepartments());
+    const deptIds = deptInfo[0];
+    const deptNames = deptInfo[1];
     inquirer
         .prompt([
             {type:"input",
@@ -139,29 +155,29 @@ function addRole() {
             {type:"list",
             name: "roleDept",
             message: "What department does this role belong to?",
-            choices:[]
+            choices: deptNames
             },
         ])
         .then((data) => {
             // const newDept = new Intern(data.internName, data.internId, data.internEmail, data.school)
-                if (data.newDept === null || data.newDept === " ") {
-                    console.log("Please enter valid Department Name");
-                    addDepartment()
-                } else if (data.newDept === null || data.newDept === " ") {
-                    console.log("Please enter valid Department Name");
-                    addDepartment()
-                } else if (data.newDept === null || data.newDept === " ") {
-                    console.log("Please enter valid Department Name");
-                    addDepartment()
+                if (data.title === null || data.title === " " || data.salary === null || data.salary === " " || typeof(data.salary) !== "number") {
+                    console.log("Please enter valid role title or salary");
+                    addRole()
                 } else {
-                    const trimmedData = data.newDept.trimStart().trimEnd();
-                    const arrayedData = trimmedData.split(" ");
-                    const snakeCaseData = arrayedData.join("_");
-                    console.log(snakeCaseData);
-                    sequelize.query(`INSERT INTO departments (dept_name) VALUES (${data}`);
-                    console.log(`New department ${snakeCaseData} added! \n`);
+                    const title = data.title.trimStart().trimEnd();
+                    const salary = data.salary;
+                    const roleDept = data.roleDept;
+                    let index;
+                    for(let i = 0; i < deptNames.length; i++){
+                        if (roleDept === deptNames[i]){
+                            index = i;
+                        }
+                    }
+                    sequelize.query(`INSERT INTO roles (title, salary, dept_id) VALUES ("${title}", ${salary}, ${deptIds[index]})`);
+                    console.log(`New role ${title} added! \n`);
+                    runMenu();
                 }
-                runMenu();
+
         });
         
 }
@@ -196,63 +212,7 @@ function addRole() {
 // }
 
 
-// function deleteEmployee() {
-//     inquirer
-//     .prompt([
-//         {type: "list",
-//         name: "toDelete",
-//         message: "Which Team Member would you like to Delete?",
-//         choices: teamList}
-//     ])
-//     .then(async (data) => {
-//         for(let i = 0; i < teamList.length; i++) {
-//             if (i !== 0 && data[i] === data.toDelete) {
-//                 teamList.splice(i, 1);
-//                 teamMenu();
-//                 return;
-//             } else if (i === 0 && data[i] === data.toDelete) {
-//                 await changeManager();
-//             }
-//         }
-//     })
-// }
 
-// function changeManager() {
-//     inquirer
-//     .prompt([
-//         {type:"input",
-//         name: "managerName",
-//         message: "Reacreating Team Manager Profile! \n Please Enter your Name:"
-//         },
-//         {type:"number",
-//         name: "managerId",
-//         message: "Please Enter your Employee ID Number:"
-//         },
-//         {type:"input",
-//         name: "managerEmail",
-//         message: "Please Enter your Email Address:"
-//         },
-//         {type:"number",
-//         name: "managerOfficeNumber",
-//         message: "Please Enter your Office Number:"
-//         },
-//     ])
-//     .then((data) => {
-//         if (data.managerName === undefined || data.managerId === undefined || data.managerEmail === undefined|| data.managerOfficeNumber === undefined){
-//             console.log(data)
-//             console.log("Please input correct data for name, ID, email and Office Number");
-//             changeManager();
-//         } else {
-//             teamList[1].name = data.managerName;
-//             teamList[1].id = data.managerId;
-//             teamList[1].email = data.managerEmail;
-//             teamList[1].officeNumber = data.managerOfficeNumber;
+runMenu();
 
-//             teamMenu();
-//         }
-//     })
-// }
-
-// runMenu();
-
-viewAllData();
+// viewAllData();
