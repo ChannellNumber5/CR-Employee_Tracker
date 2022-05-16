@@ -117,8 +117,8 @@ function addDepartment() {
                 addDepartment()
             } else {
                 const trimmedData = data.newDept.trimStart().trimEnd();
-                sequelize.query(`INSERT INTO departments (dept_name) VALUES ("${snakeCaseData}")`);
-                console.log(`New department ${snakeCaseData} added! \n`);
+                sequelize.query(`INSERT INTO departments (dept_name) VALUES ("${trimmedData}")`);
+                console.log(`New department ${trimmedData} added! \n`);
                 runMenu();
             }
         });
