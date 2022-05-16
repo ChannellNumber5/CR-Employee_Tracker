@@ -27,16 +27,16 @@ function runMenu() {
             runMenu();
         } else if (data.toDoNext === "Add a Department") {
             addDepartment();
-            runMenu();
+            // runMenu();
         } else if (data.toDoNext === "Add a Role") {
             addRole();
-            runMenu();
+            // runMenu();
         } else if (data.toDoNext === "Add an Employee") {
             addEmployee();
-            runMenu();
+            // runMenu();
         } else if (data.toDoNext === "Update an Employee Role") {
             updateEmployee();
-            runMenu();
+            // runMenu();
         } else {
             console.log("Thank you for using the Employee Tracker Application!")
         }
@@ -80,44 +80,70 @@ async function viewAllEmployeesAndRoles() {
 //     const roles = await sequelize.query('SELECT title FROM roles')
 // }
 
-// function addDepartment() {
-//     inquirer
-//         .prompt([
-//             {type:"input",
-//             name: "newDept",
-//             message: "Creating New Department \n Please Enter New Department Name:"
-//             },
-//         ])
-//         .then((data) => {
-//             // const newDept = new Intern(data.internName, data.internId, data.internEmail, data.school)
-//             // teamList.push(intern);
-//             // teamMenu();
-//         })
-// }
+function addDepartment() {
+    inquirer
+        .prompt([
+            {type:"input",
+            name: "newDept",
+            message: "Creating New Department \n Please Enter New Department Name:"
+            }
+        ])
+        .then((data) => {
+            console.log(data);
+            if (data.newDept === null || data.newDept === " ") {
+                console.log("Please enter valid Department Name");
+                addDepartment()
+            } else {
+                const trimmedData = data.newDept.trimStart().trimEnd();
+                sequelize.query(`INSERT INTO departments (dept_name) VALUES ("${snakeCaseData}")`);
+                console.log(`New department ${snakeCaseData} added! \n`);
+                runMenu();
+            }
+        });
+        
+}
 
-// function addRole() {
-//     inquirer
-//         .prompt([
-//             {type:"input",
-//             name: "title",
-//             message: "Creating Role \n Please Enter Role Title:"
-//             },
-//             {type:"number",
-//             name: "salary",
-//             message: "What is the salary for this role?"
-//             },
-//             {type:"list",
-//             name: "roleDept",
-//             message: "What department does this role belong to?",
-//             choices:[]
-//             },
-//         ])
-//         .then((data) => {
-//             // const newDept = new Intern(data.internName, data.internId, data.internEmail, data.school)
-//             // teamList.push(intern);
-//             // teamMenu();
-//         })
-// }
+function addRole() {
+    inquirer
+        .prompt([
+            {type:"input",
+            name: "title",
+            message: "Creating Role \n Please Enter Role Title:"
+            },
+            {type:"number",
+            name: "salary",
+            message: "What is the salary for this role?"
+            },
+            {type:"list",
+            name: "roleDept",
+            message: "What department does this role belong to?",
+            choices:[]
+            },
+        ])
+        .then((data) => {
+            // const newDept = new Intern(data.internName, data.internId, data.internEmail, data.school)
+                if (data.newDept === null || data.newDept === " ") {
+                    console.log("Please enter valid Department Name");
+                    addDepartment()
+                } else if (data.newDept === null || data.newDept === " ") {
+                    console.log("Please enter valid Department Name");
+                    addDepartment()
+                } else if (data.newDept === null || data.newDept === " ") {
+                    console.log("Please enter valid Department Name");
+                    addDepartment()
+                } else {
+                    const trimmedData = data.newDept.trimStart().trimEnd();
+                    const arrayedData = trimmedData.split(" ");
+                    const snakeCaseData = arrayedData.join("_");
+                    console.log(snakeCaseData);
+                    sequelize.query(`INSERT INTO departments (dept_name) VALUES (${data}`);
+                    console.log(`New department ${snakeCaseData} added! \n`);
+                }
+                runMenu();
+                });
+        
+}
+
 // function addEmployee() {
 //     inquirer
 //         .prompt([
