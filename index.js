@@ -124,7 +124,6 @@ function addDepartment() {
             }
         ])
         .then((data) => {
-            console.log(data);
             if (data.newDept === null || data.newDept === " ") {
                 console.log("Please enter valid Department Name");
                 addDepartment()
@@ -159,7 +158,6 @@ async function addRole() {
             },
         ])
         .then((data) => {
-            // const newDept = new Intern(data.internName, data.internId, data.internEmail, data.school)
                 if (data.title === null || data.title === " " || data.salary === null || data.salary === " " || typeof(data.salary) !== "number") {
                     console.log("Please enter valid role title or salary");
                     addRole()
@@ -177,39 +175,69 @@ async function addRole() {
                     console.log(`New role ${title} added! \n`);
                     runMenu();
                 }
-
         });
         
 }
 
-// function addEmployee() {
-//     inquirer
-//         .prompt([
-//             {type:"input",
-//             name: "first_name",
-//             message: "Adding New Employee \n Please Enter Employee's First Name:"
-//             },
-//             {type:"input",
-//             name: "last_name",
-//             message: "Adding New Employee \n Please Enter Employee's Last Name:"
-//             },
-//             {type:"list",
-//             name: "role",
-//             message: "What is this employees role?",
-//             choices:[]
-//             },
-//             {type:"list",
-//             name: "manager",
-//             message: "Who is this employee's manager?",
-//             choices:[]
-//             },
-//         ])
-//         .then((data) => {
-//             const newDept = new Intern(data.internName, data.internId, data.internEmail, data.school)
-//             teamList.push(intern);
-//             teamMenu();
-//         })
-// }
+async function addEmployee() {
+    const roleInfo = parseSqlData(await getCurrentRoles());
+    const roleIds = roleInfo[0];
+    const roleNames = roleInfo[1];
+
+    const empInfo = parseSqlData(await getCurrentEmployees());
+    const empIds = empInfo[0];
+    const empNames = empInfo[1];
+    empIds.push("null");
+    empNames.push("No Manager");
+
+    inquirer
+        .prompt([
+            {type:"input",
+            name: "first_name",
+            message: "Adding New Employee \n Please Enter Employee's First Name:"
+            },
+            {type:"input",
+            name: "last_name",
+            message: "Please Enter Employee's Last Name:"
+            },
+            {type:"list",
+            name: "role",
+            message: "What is this employees role?",
+            choices: roleNames
+            },
+            {type:"list",
+            name: "manager",
+            message: "Who is this employee's manager?",
+            choices: empNames
+            },
+        ])
+        .then((data) => {
+            if (data.first_name === null || data.first_name === " " || data.last_name === null || data.last_name === " ") {
+                console.log("Please employee first and/or last name cannot be blank");
+                addEmployee()
+            } else {
+                const first_name = data.first_name.trimStart().trimEnd();
+                const last_name = data.last_name.trimStart().trimEnd();
+                const role = data.role;
+                const manager = data.manager;
+                let index1;
+                let index2;
+                for (let i = 0; i < roleNames.length; i++){
+                    if (role === roleNames[i]) {
+                        index1 = i;
+                    }
+                }
+                for (let i = 0; i < empNames.length; i++){
+                    if (manager === empNames[i]) {
+                        index2 = i;
+                    }
+                }
+                sequelize.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${first_name}", "${last_name}", ${roleIds[index1]}, ${empIds[index2]})`);
+                console.log(`New employee ${first_name} ${last_name} added! \n`);
+                runMenu();
+            }
+        })
+}
 
 
 
