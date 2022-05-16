@@ -51,13 +51,13 @@ async function viewAllDepartments() {
 }
 
 async function viewAllRoles() {
-    const rolesData = await sequelize.query("SELECT * FROM roles");
+    const rolesData = await sequelize.query("SELECT roles.id AS role_id, roles.title, departments.dept_name, roles. salary  FROM departments INNER JOIN roles ON departments.id=roles.dept_id");
     const tableData = cTable.getTable(rolesData[1]);
     return tableData;
 }
 
 async function viewAllEmployees() {
-    const empData = await sequelize.query("SELECT * FROM employees");
+    const empData = await sequelize.query("SELECT c.id, c.first_name, c.last_name, roles.title, roles.salary, departments.dept_name, CONCAT(r.first_name,' ',r.last_name) AS manager FROM employees c INNER JOIN roles ON roles.id=c.role_id INNER JOIN departments ON departments.id=roles.dept_id LEFT JOIN employees r ON r.id=c.manager_id;");
     const tableData = cTable.getTable(empData[1]);
     return tableData;
 }
@@ -80,129 +80,129 @@ async function viewAllEmployeesAndRoles() {
 //     const roles = await sequelize.query('SELECT title FROM roles')
 // }
 
-function addDepartment() {
-    inquirer
-        .prompt([
-            {type:"input",
-            name: "newDept",
-            message: "Creating New Department \n Please Enter New Department Name:"
-            },
-        ])
-        .then((data) => {
-            // const newDept = new Intern(data.internName, data.internId, data.internEmail, data.school)
-            // teamList.push(intern);
-            // teamMenu();
-        })
-}
+// function addDepartment() {
+//     inquirer
+//         .prompt([
+//             {type:"input",
+//             name: "newDept",
+//             message: "Creating New Department \n Please Enter New Department Name:"
+//             },
+//         ])
+//         .then((data) => {
+//             // const newDept = new Intern(data.internName, data.internId, data.internEmail, data.school)
+//             // teamList.push(intern);
+//             // teamMenu();
+//         })
+// }
 
-function addRole() {
-    inquirer
-        .prompt([
-            {type:"input",
-            name: "title",
-            message: "Creating Role \n Please Enter Role Title:"
-            },
-            {type:"number",
-            name: "salary",
-            message: "What is the salary for this role?"
-            },
-            {type:"list",
-            name: "roleDept",
-            message: "What department does this role belong to?",
-            choices:[]
-            },
-        ])
-        .then((data) => {
-            // const newDept = new Intern(data.internName, data.internId, data.internEmail, data.school)
-            // teamList.push(intern);
-            // teamMenu();
-        })
-}
-function addEmployee() {
-    inquirer
-        .prompt([
-            {type:"input",
-            name: "first_name",
-            message: "Adding New Employee \n Please Enter Employee's First Name:"
-            },
-            {type:"input",
-            name: "last_name",
-            message: "Adding New Employee \n Please Enter Employee's Last Name:"
-            },
-            {type:"list",
-            name: "role",
-            message: "What is this employees role?",
-            choices:[]
-            },
-            {type:"list",
-            name: "manager",
-            message: "Who is this employee's manager?",
-            choices:[]
-            },
-        ])
-        .then((data) => {
-            const newDept = new Intern(data.internName, data.internId, data.internEmail, data.school)
-            teamList.push(intern);
-            teamMenu();
-        })
-}
+// function addRole() {
+//     inquirer
+//         .prompt([
+//             {type:"input",
+//             name: "title",
+//             message: "Creating Role \n Please Enter Role Title:"
+//             },
+//             {type:"number",
+//             name: "salary",
+//             message: "What is the salary for this role?"
+//             },
+//             {type:"list",
+//             name: "roleDept",
+//             message: "What department does this role belong to?",
+//             choices:[]
+//             },
+//         ])
+//         .then((data) => {
+//             // const newDept = new Intern(data.internName, data.internId, data.internEmail, data.school)
+//             // teamList.push(intern);
+//             // teamMenu();
+//         })
+// }
+// function addEmployee() {
+//     inquirer
+//         .prompt([
+//             {type:"input",
+//             name: "first_name",
+//             message: "Adding New Employee \n Please Enter Employee's First Name:"
+//             },
+//             {type:"input",
+//             name: "last_name",
+//             message: "Adding New Employee \n Please Enter Employee's Last Name:"
+//             },
+//             {type:"list",
+//             name: "role",
+//             message: "What is this employees role?",
+//             choices:[]
+//             },
+//             {type:"list",
+//             name: "manager",
+//             message: "Who is this employee's manager?",
+//             choices:[]
+//             },
+//         ])
+//         .then((data) => {
+//             const newDept = new Intern(data.internName, data.internId, data.internEmail, data.school)
+//             teamList.push(intern);
+//             teamMenu();
+//         })
+// }
 
 
-function deleteEmployee() {
-    inquirer
-    .prompt([
-        {type: "list",
-        name: "toDelete",
-        message: "Which Team Member would you like to Delete?",
-        choices: teamList}
-    ])
-    .then(async (data) => {
-        for(let i = 0; i < teamList.length; i++) {
-            if (i !== 0 && data[i] === data.toDelete) {
-                teamList.splice(i, 1);
-                teamMenu();
-                return;
-            } else if (i === 0 && data[i] === data.toDelete) {
-                await changeManager();
-            }
-        }
-    })
-}
+// function deleteEmployee() {
+//     inquirer
+//     .prompt([
+//         {type: "list",
+//         name: "toDelete",
+//         message: "Which Team Member would you like to Delete?",
+//         choices: teamList}
+//     ])
+//     .then(async (data) => {
+//         for(let i = 0; i < teamList.length; i++) {
+//             if (i !== 0 && data[i] === data.toDelete) {
+//                 teamList.splice(i, 1);
+//                 teamMenu();
+//                 return;
+//             } else if (i === 0 && data[i] === data.toDelete) {
+//                 await changeManager();
+//             }
+//         }
+//     })
+// }
 
-function changeManager() {
-    inquirer
-    .prompt([
-        {type:"input",
-        name: "managerName",
-        message: "Reacreating Team Manager Profile! \n Please Enter your Name:"
-        },
-        {type:"number",
-        name: "managerId",
-        message: "Please Enter your Employee ID Number:"
-        },
-        {type:"input",
-        name: "managerEmail",
-        message: "Please Enter your Email Address:"
-        },
-        {type:"number",
-        name: "managerOfficeNumber",
-        message: "Please Enter your Office Number:"
-        },
-    ])
-    .then((data) => {
-        if (data.managerName === undefined || data.managerId === undefined || data.managerEmail === undefined|| data.managerOfficeNumber === undefined){
-            console.log(data)
-            console.log("Please input correct data for name, ID, email and Office Number");
-            changeManager();
-        } else {
-            teamList[1].name = data.managerName;
-            teamList[1].id = data.managerId;
-            teamList[1].email = data.managerEmail;
-            teamList[1].officeNumber = data.managerOfficeNumber;
+// function changeManager() {
+//     inquirer
+//     .prompt([
+//         {type:"input",
+//         name: "managerName",
+//         message: "Reacreating Team Manager Profile! \n Please Enter your Name:"
+//         },
+//         {type:"number",
+//         name: "managerId",
+//         message: "Please Enter your Employee ID Number:"
+//         },
+//         {type:"input",
+//         name: "managerEmail",
+//         message: "Please Enter your Email Address:"
+//         },
+//         {type:"number",
+//         name: "managerOfficeNumber",
+//         message: "Please Enter your Office Number:"
+//         },
+//     ])
+//     .then((data) => {
+//         if (data.managerName === undefined || data.managerId === undefined || data.managerEmail === undefined|| data.managerOfficeNumber === undefined){
+//             console.log(data)
+//             console.log("Please input correct data for name, ID, email and Office Number");
+//             changeManager();
+//         } else {
+//             teamList[1].name = data.managerName;
+//             teamList[1].id = data.managerId;
+//             teamList[1].email = data.managerEmail;
+//             teamList[1].officeNumber = data.managerOfficeNumber;
 
-            teamMenu();
-        }
-    })
-}
+//             teamMenu();
+//         }
+//     })
+// }
 
 runMenu();
