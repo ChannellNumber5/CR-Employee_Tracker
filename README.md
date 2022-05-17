@@ -5,7 +5,9 @@ Check out the Employee Tracker Application repo [here](https://github.com/Channe
 ## Description
 This is a command line application that helps users organize their company's information. The application uses inquirer to prompt and take in the user's information and choices and then uses MySql to store the user's company information. It can be used to track departments, roles/positions in the company, and employees within the company.
 
-The hardest part about this application was switching between javascript and SQL, knowing how to merge the two together, so that they worked with executing the right queries in the right order. Also, it was definitely a learning curve to use table aliases, when referencing and joining information from the same tables.
+The hardest part about this application was switching between javascript and SQL, knowing how to merge the two together, so that they worked with executing the right queries in the right order. Also, it was definitely a learning curve to use table aliases, when referencing and joining information from the same tables. 
+
+The initial requirements for this project were to use the npm module mysql2 in order to query the MySQL database; however that would require creating the database connection within the javascript file, exposing the developer's MySQL password. Instead, this application uses the sequelize and dotenv modules to attach the database, user and password variables and information to the process environment variables so that they can be excluded when pushing the project into github.
 
 ## User Instructions
 The user will need some sort of command line application, whether it's terminal or git bash, or something like that. The user will also need to use node package manager (npm) and MySQL. Once they have those loaded, they will then need to source the schema.sql file, to create the new company database and then they can begin creating/tracking their company.
@@ -21,9 +23,10 @@ Then, here is a screenshot after choosing the option to view all departments and
 ![view all employees departments and roles](./assets/images/CR-EmpTracker-ScreenShot1.png)
 
 ## Credits
+The UW Coding Bootcamp for the project inspiration and code examples to learn about how to query databases.
 
 ## License
-MIT
+MIT - this is public code, so do with it as you please. Just be sure to follow my other projects on Github!
 
 ## Resources
 - Git Branch Conflict Solution: [Merging Unrelated Histories](https://komodor.com/learn/how-to-fix-fatal-refusing-to-merge-unrelated-histories-error/)
