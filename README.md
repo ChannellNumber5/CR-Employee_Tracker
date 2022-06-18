@@ -22,8 +22,14 @@ Then, here is a screenshot after choosing the option to view all departments and
 
 ![view all employees departments and roles](./assets/images/CR-EmpTracker-ScreenShot1.png)
 
-## Credits
+## Credits/Contact
 The UW Coding Bootcamp for the project inspiration and code examples to learn about how to query databases.
+
+Christina Robinson
+
+Email: [CLRCoding@gmail.com](mailto:CLRCoding@gmail.com)
+
+Github: [ChannellNumber5](https://github.com/ChannellNumber5)
 
 ## License
 MIT - this is public code, so do with it as you please. Just be sure to follow my other projects on Github!
